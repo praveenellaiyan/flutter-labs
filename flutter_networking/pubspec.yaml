@@ -1,0 +1,28 @@
+name: flutter_networking
+description: A new Flutter application.
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: any
+  built_value: any
+  built_collection: any
+
+  cupertino_icons: ^1.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  build_runner: any
+  built_value_generator: any
+
+
+flutter:
+
+  uses-material-design: true
