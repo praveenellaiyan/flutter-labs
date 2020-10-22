@@ -1,25 +1,43 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:behavior_subject/src/user.dart';
 import 'package:http/http.dart' as http;
-import 'package:quiver/iterables.dart';
 import 'package:rxdart/rxdart.dart';
 
+enum UserType { NewUser, TopUser }
+
 class UsersBloc {
+  /// create user stream through which subscribers receive data
+  final _usersSubject = BehaviorSubject<UnmodifiableListView<User>>();
+
   Stream<List<User>> get users => _usersSubject.stream;
 
-  final _usersSubject = BehaviorSubject<UnmodifiableListView<User>>();
+  final userTypeController = StreamController<UserType>();
+
+  Sink<UserType> get userType => userTypeController.sink;
 
   var cachedUsers = <User>[];
 
   UsersBloc() {
-    getUsers().then((_) {
+    getUsersFunc([1, 2, 3, 4, 5]);
+    userTypeController.stream.listen((userType) {
+      if (userType == UserType.NewUser) {
+        getUsersFunc([1, 2, 3, 4, 5]);
+      } else if (userType == UserType.TopUser) {
+        getUsersFunc([6, 7, 8, 9, 10]);
+      }
+    });
+  }
+
+  void getUsersFunc(List<int> ids) {
+    getUsers(ids).then((_) {
       _usersSubject.add(UnmodifiableListView(cachedUsers));
     });
   }
 
-  Future<Null> getUsers() async {
-    final futureUsers = range(1, 10).map((e) => getUserBy(e));
+  Future<Null> getUsers(List<int> userIds) async {
+    final futureUsers = userIds.map((e) => getUserBy(e));
     var users = await Future.wait(futureUsers);
     cachedUsers = users;
   }

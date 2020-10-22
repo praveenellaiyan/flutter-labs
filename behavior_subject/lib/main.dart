@@ -54,6 +54,22 @@ class _MyHomePageState extends State<MyHomePage> {
           children: snapshot.data.map((user) => buildUser(user)).toList(),
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 0,
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.account_circle), title: Text("1-5 Users")),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.account_circle), title: Text("6-10 Users"))
+        ],
+        onTap: (index) {
+          if (index == 0) {
+            widget.usersBloc.userType.add(UserType.NewUser);
+          } else if (index == 1) {
+            widget.usersBloc.userType.add(UserType.TopUser);
+          }
+        },
+      ),
     );
   }
 
