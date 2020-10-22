@@ -1,16 +1,11 @@
 # behavior_subject
 
-A new Flutter project.
+## BLoC Rules
+- Output and Input are streams
+- Don't have business logic, just pass stuff's which has to be rendered.
 
-## Getting Started
+## BehaviorSubject
+Once started to listen on stream it'll atleast retrieve previously streamed content if there isn't any newly added content.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## StreamController
+StreamController wait for things actively coming from stream. So there'll be most probability to see empty stuffs if there aren't content pushed/updated to stream.
