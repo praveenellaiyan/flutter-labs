@@ -125,6 +125,7 @@ class _LoadingContentState extends State<LoadingContent>
           _controller.forward().then((value) => _controller.reverse());
           return FadeTransition(
               child: Icon(FontAwesomeIcons.truckLoading),
+              // start at 0.5 opacity and end at 1.0
               opacity: Tween(begin: 0.5, end: 1.0).animate(
                   CurvedAnimation(curve: Curves.easeIn, parent: _controller)));
         } else {
