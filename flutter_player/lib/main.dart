@@ -102,10 +102,11 @@ class _MyPlayerState extends State<MyPlayer> {
       _audioPlayer.onAudioPositionChanged.listen((Duration d) {
         setState(() => _playerPosition = d.inMilliseconds / _duration);
       });
-      _audioPlayer
-          .getDuration()
-          .then((value) => setState(() => _duration = value));
-      setState(() => _isPlaying = true);
+      int totalDuration = await _audioPlayer.getDuration();
+      setState(() {
+        _isPlaying = true;
+        _duration = totalDuration;
+      });
     } else {
       await _audioPlayer.play(
           'https://incompetech.filmmusic.io/song/6671-moonlight-beach.mp3');
