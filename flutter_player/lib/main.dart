@@ -37,8 +37,43 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: MyPlayer(),
+      body: SafeArea(
+        child: PlayerDashboard(),
+      ),
     );
+  }
+}
+
+class PlayerDashboard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Flexible(
+          child: AlbumArt(),
+          flex: 8,
+        ),
+        Flexible(
+          child: Track(),
+          flex: 2,
+        ),
+      ],
+      mainAxisAlignment: MainAxisAlignment.center,
+    );
+  }
+}
+
+class Track extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MyPlayer();
+  }
+}
+
+class AlbumArt extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
 
@@ -52,6 +87,8 @@ class _MyPlayerState extends State<MyPlayer> {
   AudioPlayer _audioPlayer;
   AudioCache _audioCache;
 
+  double _playerPosition = 0.0;
+
   @override
   void initState() {
     _audioPlayer = AudioPlayer();
@@ -61,28 +98,49 @@ class _MyPlayerState extends State<MyPlayer> {
   void _play(bool isLocal) async {
     if (isLocal) {
       await _audioCache.play('moonlight.mp3');
-    } else {}
+      int duration = await _audioPlayer.getDuration();
+      _audioPlayer.onAudioPositionChanged.listen((Duration d) {
+        double position = d.inMilliseconds / duration;
+        setState(() => _playerPosition = position);
+      });
+      setState(() => _isPlaying = true);
+    } else {
+      await _audioPlayer.play(
+          'https://incompetech.filmmusic.io/song/6671-moonlight-beach.mp3');
+    }
   }
 
-  void _stop(bool isLocal) async {
-    if (isLocal) {
-      await _audioPlayer.stop();
-    } else {}
+  void _stop() async {
+    await _audioPlayer.stop();
+    setState(() => _isPlaying = false);
   }
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-        icon: _isPlaying ? Icon(Icons.stop) : Icon(Icons.play_arrow),
-        onPressed: () {
-          if (_isPlaying) {
-            _stop(true);
-          } else {
-            _play(true);
-          }
-          setState(() {
-            _isPlaying = !_isPlaying;
-          });
-        });
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Slider(
+          value: _playerPosition,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(icon: Icon(Icons.fast_rewind), onPressed: () {}),
+            IconButton(
+                icon: _isPlaying ? Icon(Icons.stop) : Icon(Icons.play_arrow),
+                onPressed: () {
+                  if (_isPlaying) {
+                    _stop();
+                  } else {
+                    _play(true);
+                  }
+                }),
+            IconButton(icon: Icon(Icons.fast_forward), onPressed: () {}),
+          ],
+        ),
+      ],
+    );
   }
 }
