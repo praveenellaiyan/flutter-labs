@@ -88,7 +88,7 @@ class _MyPlayerState extends State<MyPlayer> {
   AudioCache _audioCache;
 
   double _playerPosition = 0.0;
-  int _duration = 0;
+  double _duration = 0.0;
 
   @override
   void initState() {
@@ -99,13 +99,17 @@ class _MyPlayerState extends State<MyPlayer> {
   void _play(bool isLocal) async {
     if (isLocal) {
       await _audioCache.play('moonlight.mp3');
+      setState(() => _isPlaying = true);
       _audioPlayer.onAudioPositionChanged.listen((Duration d) {
-        setState(() => _playerPosition = d.inMilliseconds / _duration);
+        double duration = d.inMilliseconds / _duration;
+        setState(() =>
+            _playerPosition = duration.isFinite ? duration : _playerPosition);
       });
-      int totalDuration = await _audioPlayer.getDuration();
-      setState(() {
-        _isPlaying = true;
-        _duration = totalDuration;
+      Future.delayed(Duration(seconds: 2), () async {
+        int totalDuration = await _audioPlayer.getDuration();
+        setState(() {
+          _duration = double.parse(totalDuration.toString());
+        });
       });
     } else {
       await _audioPlayer.play(
