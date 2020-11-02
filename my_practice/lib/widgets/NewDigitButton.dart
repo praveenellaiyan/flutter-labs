@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/basic.dart';
-
+/*
+  Suitable one
+ */
 class NewDigitButton extends StatelessWidget {
   final String number;
 
@@ -9,11 +10,10 @@ class NewDigitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          const EdgeInsets.only(left: 0.0, top: 1.0, right: 8.0, bottom: 0.0),
+      padding: const EdgeInsets.all(5.0),
       child: Container(
-          width: 40,
-          height: 40,
+          width: MediaQuery.of(context).size.width * 0.1,
+          height: MediaQuery.of(context).size.width * 0.1,
           alignment: Alignment.center,
           child: SizedBox(
               child: FloatingActionButton(

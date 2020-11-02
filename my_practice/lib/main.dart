@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:my_practice/widgets/DigitButton';
+import 'package:my_practice/widgets/NewDigitButton.dart';
 
 void main() {
   runApp(MyApp());
@@ -69,97 +69,31 @@ class SudokuControl extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              NewDigitButton("10"),
-              NewDigitButton("11"),
-              NewDigitButton("12"),
-            ],
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            NewDigitButton("1"),
+            NewDigitButton("2"),
+            NewDigitButton("3"),
+          ],
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              NewDigitButton("13"),
-              NewDigitButton("14"),
-              NewDigitButton("15"),
-            ],
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            NewDigitButton("4"),
+            NewDigitButton("5"),
+            NewDigitButton("6"),
+          ],
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              NewDigitButton("16"),
-              NewDigitButton("17"),
-              NewDigitButton("18"),
-            ],
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            NewDigitButton("7"),
+            NewDigitButton("8"),
+            NewDigitButton("9"),
+          ],
         ),
       ],
-    );
-  }
-}
-
-/*
-  Padding Issue
- */
-class DigitButton extends StatelessWidget {
-  final String number;
-
-  DigitButton(this.number);
-
-  @override
-  Widget build(BuildContext context) {
-    return RawMaterialButton(
-      shape: CircleBorder(),
-      elevation: 5.0,
-      fillColor: Colors.white,
-      child: RichText(
-        text: TextSpan(
-          text: number,
-          style: TextStyle(color: Colors.blueAccent, fontSize: 24.0),
-        ),
-      ),
-      onPressed: () => {},
-    );
-  }
-}
-
-/*
-  Suitable one
- */
-class NewDigitButton extends StatelessWidget {
-  final String number;
-
-  NewDigitButton(this.number);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding:
-          const EdgeInsets.only(left: 0.0, top: 1.0, right: 8.0, bottom: 0.0),
-      child: Container(
-          width: 40,
-          height: 40,
-          alignment: Alignment.center,
-          child: SizedBox(
-              child: FloatingActionButton(
-            backgroundColor: Colors.white,
-            child: RichText(
-              text: TextSpan(
-                text: number,
-                style: TextStyle(color: Colors.blueAccent, fontSize: 28.0),
-              ),
-            ),
-            onPressed: () {},
-          ))),
     );
   }
 }
