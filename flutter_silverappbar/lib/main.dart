@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import 'src/player.dart';
 
@@ -45,22 +47,67 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
-                  (context, index) => buildRow(players[index]),
-                  childCount: players.length),
+                (context, index) => buildRow(players[index]),
+                childCount: players.length,
+              ),
             )
           ],
-          // children: players.map((e) => buildRow(e)).toList(),
         ));
   }
 
   Widget buildRow(Player player) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
+    return ExpansionTile(
+      key: Key(player.playerName),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Expanded(child: Text(player.playerName)),
           Expanded(child: Text(player.skill)),
         ],
+      ),
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Center(child: Text("More Info")),
+            IconButton(
+              icon: Icon(Icons.launch_outlined),
+              onPressed: () async {
+                if (await canLaunch(player.url)) {
+                  await launch(player.url);
+                }
+              },
+            ),
+            IconButton(
+                icon: Icon(Icons.web_asset_rounded),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PlayerDetailsWeb(player.url)),
+                  );
+                }),
+          ],
+        )
+      ],
+    );
+  }
+}
+
+class PlayerDetailsWeb extends StatelessWidget {
+  final String playerUrl;
+
+  PlayerDetailsWeb(this.playerUrl);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Player Web Details"),
+      ),
+      body: WebView(
+        initialUrl: playerUrl,
+        javascriptMode: JavascriptMode.unrestricted,
       ),
     );
   }

@@ -68,6 +68,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return ExpansionTile(
       title: Text(user.name),
       subtitle: Text(user.company.name),
+      initiallyExpanded: false,
+      children: [
+        Icon(Icons.launch_outlined),
+      ],
     );
   }
 }
