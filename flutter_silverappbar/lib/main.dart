@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_silverappbar/bloc/pref_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'src/player.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefBloc = PrefBloc();
+  runApp(MyApp(prefBloc: prefBloc));
 }
 
 class MyApp extends StatelessWidget {
+  final PrefBloc prefBloc;
+
+  MyApp({
+    Key key,
+    this.prefBloc,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,15 +27,19 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(
+        title: 'Flutter Demo Home Page',
+        prefBloc: prefBloc,
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key key, this.title, this.prefBloc}) : super(key: key);
 
   final String title;
+  final PrefBloc prefBloc;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -37,6 +51,17 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
+          actions: [
+            IconButton(
+              icon: Icon(
+                Icons.settings,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                _showPreferenceModal(context, widget.prefBloc);
+              },
+            )
+          ],
         ),
         body: CustomScrollView(
           slivers: [
@@ -47,12 +72,40 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
-                (context, index) => buildRow(players[index]),
+                    (context, index) => buildRow(players[index]),
                 childCount: players.length,
               ),
             )
           ],
         ));
+  }
+
+  void _showPreferenceModal(BuildContext buildContext,
+      PrefBloc prefBloc) async {
+    showModalBottomSheet(
+      context: buildContext,
+      builder: (buildContext) {
+        return StreamBuilder<Preference>(
+            stream: prefBloc.prefs,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Scaffold(
+                  body: Center(
+                    child: Switch(
+                      value: snapshot.data.showWebView,
+                      onChanged: (showWebView) {
+                        prefBloc.showWebViewSink.add(showWebView);
+                      },
+                    ),
+                  ),
+                );
+              } else {
+                return Container();
+              }
+            }
+        );
+      },
+    );
   }
 
   Widget buildRow(Player player) {
@@ -78,14 +131,24 @@ class _MyHomePageState extends State<MyHomePage> {
                 }
               },
             ),
-            IconButton(
-                icon: Icon(Icons.web_asset_rounded),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PlayerDetailsWeb(player.url)),
-                  );
+            StreamBuilder<Preference>(
+                stream: widget.prefBloc.prefs,
+                initialData: Preference(false),
+                builder: (BuildContext context,
+                    AsyncSnapshot<Preference> snapshot) {
+                  if (snapshot.hasData && snapshot.data.showWebView) {
+                    return IconButton(
+                        icon: Icon(Icons.web_asset_rounded),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    PlayerDetailsWeb(player.url)),
+                          );
+                        });
+                  }
+                  return Container();
                 }),
           ],
         )
