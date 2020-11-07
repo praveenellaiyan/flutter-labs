@@ -109,10 +109,12 @@ class HelperTool extends StatefulWidget {
 
 class _HelperToolState extends State<HelperTool> {
   bool isEditEnabled;
+  int undoCount;
 
   @override
   void initState() {
     isEditEnabled = false;
+    undoCount = 0;
   }
 
   @override
@@ -154,13 +156,20 @@ class _HelperToolState extends State<HelperTool> {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            IconButton(
+            /*IconButton(
               icon: Icon(
                 Icons.undo_rounded,
                 size: 30.0,
                 color: Colors.grey,
               ),
               onPressed: () {},
+              splashRadius: MediaQuery.of(context).size.width * 0.070,
+            ),*/
+            IconButton(
+              icon: AnimatedUndoIcon(undoCount: undoCount),
+              onPressed: () {
+                setState(() => undoCount = undoCount + 1);
+              },
               splashRadius: MediaQuery.of(context).size.width * 0.070,
             ),
             IconButton(
@@ -264,6 +273,57 @@ class _AnimatedEditIconState extends AnimatedWidgetBaseState<AnimatedEditIcon> {
   @override
   void forEachTween(visitor) {
     _colorTween = visitor(_colorTween, widget.targetEditColor,
-        (color) => ColorTween(begin: color));
+            (color) => ColorTween(begin: color));
+  }
+}
+
+
+/*
+ If the begin and end color is same then lerp won't be visible
+ */
+class AnimatedUndoIcon extends ImplicitlyAnimatedWidget {
+  final int undoCount;
+
+  //TODO check using Animation controller rather with ColorTween
+  Color get targetUndoColor => undoCount == 0 ? Colors.grey : Colors.grey;
+
+  AnimatedUndoIcon({@required this.undoCount, Key key})
+      : super(key: key, duration: Duration(milliseconds: 300));
+
+  @override
+  _AnimatedUndoIconState createState() => _AnimatedUndoIconState();
+}
+
+class _AnimatedUndoIconState extends AnimatedWidgetBaseState<AnimatedUndoIcon> {
+  CustomUndoTween _colorTween;
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(
+      Icons.undo_rounded,
+      size: 30.0,
+      color: _colorTween.evaluate(animation),
+    );
+  }
+
+  @override
+  void forEachTween(visitor) {
+    _colorTween = visitor(_colorTween, widget.targetUndoColor,
+            (color) => CustomUndoTween(begin: color));
+  }
+}
+
+class CustomUndoTween extends Tween<Color> {
+  final Color middle = Colors.indigo;
+
+  CustomUndoTween({Color begin, Color end}) : super(begin: begin, end: end);
+
+  @override
+  Color lerp(double t) {
+    if (t < 0.5) {
+      Color.lerp(begin, middle, t * 2);
+    } else {
+      Color.lerp(middle, end, (t - 0.5) * 2);
+    }
   }
 }
