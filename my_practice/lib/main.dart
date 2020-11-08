@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_practice/widgets/NewDigitButton.dart';
+import 'package:my_practice/widgets/action_button.dart';
+import 'package:my_practice/widgets/digit_button.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primaryColor: Colors.blueAccent,
+        primaryColor: Colors.indigo,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: SudokuPlayArea(title: 'PuzBox - Sudoku'),
@@ -34,6 +35,7 @@ class _SudokuPlayAreaState extends State<SudokuPlayArea> {
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
+          toolbarHeight: MediaQuery.of(context).size.width * 0.1,
         ),
         body: Column(
           children: [
@@ -122,24 +124,18 @@ class _HelperToolState extends State<HelperTool> {
     return Column(
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            IconButton(
-              icon: Icon(
-                Icons.delete_outline_rounded,
-                size: 30.0,
-                color: Colors.grey,
-              ),
-              onPressed: () {},
-              splashRadius: MediaQuery.of(context).size.width * 0.070,
-            ),
+            ActionButton(Icons.delete_outline_rounded),
+            ActionButton(Icons.edit),
+            /*
             IconButton(
               icon: AnimatedEditIcon(isEditEnabled: isEditEnabled),
               onPressed: () {
                 setState(() => isEditEnabled = !isEditEnabled);
               },
               splashRadius: MediaQuery.of(context).size.width * 0.070,
-            ),
+            ),*/
             /*IconButton(
               icon: Icon(
                 Icons.edit,
@@ -154,56 +150,25 @@ class _HelperToolState extends State<HelperTool> {
           ],
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            /*IconButton(
-              icon: Icon(
-                Icons.undo_rounded,
-                size: 30.0,
-                color: Colors.grey,
-              ),
-              onPressed: () {},
-              splashRadius: MediaQuery.of(context).size.width * 0.070,
-            ),*/
+            ActionButton(Icons.undo_rounded),
+            ActionButton(Icons.redo_rounded),
+            /*
             IconButton(
               icon: AnimatedUndoIcon(undoCount: undoCount),
               onPressed: () {
                 setState(() => undoCount = undoCount + 1);
               },
               splashRadius: MediaQuery.of(context).size.width * 0.070,
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.redo_rounded,
-                size: 30.0,
-                color: Colors.grey,
-              ),
-              onPressed: () {},
-              splashRadius: MediaQuery.of(context).size.width * 0.070,
-            )
+            ),*/
           ],
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            IconButton(
-              icon: Icon(
-                Icons.search_rounded,
-                size: 30.0,
-                color: Colors.grey,
-              ),
-              onPressed: () {},
-              splashRadius: MediaQuery.of(context).size.width * 0.070,
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.lightbulb_outline_rounded,
-                size: 30.0,
-                color: Colors.grey,
-              ),
-              onPressed: () {},
-              splashRadius: MediaQuery.of(context).size.width * 0.070,
-            )
+            ActionButton(Icons.search_rounded),
+            ActionButton(Icons.lightbulb_outline_rounded),
           ],
         ),
       ],
@@ -217,7 +182,7 @@ class NumberPad extends StatelessWidget {
     return Column(
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             NewDigitButton("1"),
             NewDigitButton("2"),
@@ -225,7 +190,7 @@ class NumberPad extends StatelessWidget {
           ],
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             NewDigitButton("4"),
             NewDigitButton("5"),
@@ -233,7 +198,7 @@ class NumberPad extends StatelessWidget {
           ],
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             NewDigitButton("7"),
             NewDigitButton("8"),
@@ -266,7 +231,6 @@ class _AnimatedEditIconState extends AnimatedWidgetBaseState<AnimatedEditIcon> {
       Icons.edit,
       size: 30.0,
       color: _colorTween.evaluate(animation),
-      // color: widget.isEditEnabled ? Colors.blueAccent : Colors.grey,
     );
   }
 
@@ -321,9 +285,9 @@ class CustomUndoTween extends Tween<Color> {
   @override
   Color lerp(double t) {
     if (t < 0.5) {
-      Color.lerp(begin, middle, t * 2);
+      return Color.lerp(begin, middle, t * 2);
     } else {
-      Color.lerp(middle, end, (t - 0.5) * 2);
+      return Color.lerp(middle, end, (t - 0.5) * 2);
     }
   }
 }
