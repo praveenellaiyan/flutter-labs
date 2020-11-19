@@ -10,24 +10,44 @@ class NewDigitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 3),
+    return Expanded(
+      child: FlatButton(
+        child: Text(
+          _number,
+          style: TextStyle(
+            color: Colors.grey,
+            fontSize: 20.0,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        onPressed: () {},
+      ),
+    );
+
+    /*return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 2.0),
       child: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.1,
-        height: MediaQuery.of(context).size.width * 0.1,
-        child: FloatingActionButton(
-          backgroundColor: Colors.white,
+        width: MediaQuery.of(context).size.width * 0.11,
+        height: MediaQuery.of(context).size.width * 0.12,
+        child: FlatButton(
           child: Text(
             _number,
             style: TextStyle(
-              color: Colors.blueAccent,
-              fontSize: MediaQuery.of(context).size.width * 0.085,
+              color: Colors.grey,
+              fontSize: MediaQuery.of(context).size.width * 0.1,
             ),
             textAlign: TextAlign.center,
           ),
           onPressed: () {},
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                  Radius.circular(
+                      MediaQuery.of(context).size.height * 0.015
+                  )
+              )
+          ),
         ),
       ),
-    );
+    );*/
   }
 }

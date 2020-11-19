@@ -7,20 +7,39 @@ class ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 2.5),
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.1,
-        height: MediaQuery.of(context).size.width * 0.1,
-        child: IconButton(
-          icon: Icon(_iconData),
-          onPressed: () {},
-          splashRadius: MediaQuery.of(context).size.width * 0.070,
-          iconSize: MediaQuery.of(context).size.width * .085,
+    return Expanded(
+      child: FlatButton(
+        child: Icon(
+          _iconData,
+          // size: 28.0,
           color: Colors.grey,
-          padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 2.5),
         ),
+        onPressed: () {},
+        padding: const EdgeInsets.only(right: 2.0),
       ),
     );
+
+    /*return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 2.0),
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.12,
+        height: MediaQuery.of(context).size.width * 0.12,
+        child: FlatButton(
+          child: Icon(
+            _iconData,
+            size: MediaQuery.of(context).size.width * 0.1,
+            color: Colors.grey,
+          ),
+          onPressed: () {},
+          padding: const EdgeInsets.symmetric(
+              vertical: 2.0,
+              horizontal: 2.0
+          ),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(MediaQuery.of(context).size.height * 0.015))
+          ),
+        ),
+      ),
+    );*/
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:my_practice/widgets/action_button.dart';
 import 'package:my_practice/widgets/digit_button.dart';
 
@@ -13,9 +14,10 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primaryColor: Colors.indigo,
+        canvasColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SudokuPlayArea(title: 'PuzBox - Sudoku'),
+      home: SudokuPlayArea(title: 'Sudoku'),
     );
   }
 }
@@ -30,25 +32,103 @@ class SudokuPlayArea extends StatefulWidget {
 }
 
 class _SudokuPlayAreaState extends State<SudokuPlayArea> {
+  PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-          toolbarHeight: MediaQuery.of(context).size.width * 0.1,
-        ),
-        body: Column(
-          children: [
-            Flexible(
-              child: SudokuBoard(),
-              flex: 7,
+      appBar: AppBar(
+        title: Text(widget.title),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: IconButton(
+              icon: Icon(Icons.favorite_border_rounded),
+              onPressed: () {},
+              splashRadius: 20.0,
             ),
-            Flexible(
-              child: SudokuControl(),
-              flex: 3,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: IconButton(
+              icon: Icon(Icons.color_lens_outlined),
+              onPressed: () {},
+              splashRadius: 20.0,
             ),
-          ],
-        ));
+          ),
+          Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: IconButton(
+              icon: Icon(Icons.settings),
+              onPressed: () {},
+              splashRadius: 20.0,
+            ),
+          ),
+        ],
+        leading: Icon(Icons.apps_rounded),
+        titleSpacing: 2.0,
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              OutlineButton(
+                child: Text(
+                  "Medium",
+                  style: TextStyle(color: Colors.indigo),
+                ),
+              ),
+              Icon(
+                Icons.supervisor_account_rounded,
+                color: Colors.indigo,
+              ),
+              FlatButton.icon(
+                icon: Icon(
+                  Icons.access_time,
+                  color: Colors.indigo,
+                ),
+                label: Text(
+                  "09:54",
+                  style: TextStyle(
+                    decorationColor: Colors.indigo,
+                  ),
+                ),
+                onPressed: () {},
+                color: Colors.white70,
+                padding: const EdgeInsets.only(),
+              ),
+            ],
+          ),
+          Expanded(child: SudokuBoard()),
+          Expanded(
+            child: PageView(
+                controller: _pageController,
+                scrollDirection: Axis.vertical,
+                children: [
+                  SudokuControl(),
+                  SudokuControl(),
+                ]),
+            // flex: 3,
+          ),
+        ],
+      ),
+      resizeToAvoidBottomInset: false,
+    );
   }
 }
 
@@ -63,7 +143,11 @@ class _SudokuBoardState extends State<SudokuBoard> {
     return Padding(
       padding: const EdgeInsets.all(2.0),
       child: Placeholder(
-        color: Colors.blueAccent,
+        color: Colors.indigo,
+        fallbackHeight: MediaQuery
+            .of(context)
+            .size
+            .height * 0.56,
       ),
     );
   }
@@ -72,25 +156,39 @@ class _SudokuBoardState extends State<SudokuBoard> {
 class SudokuControl extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(2.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            flex: 3,
-            child: MovementControl(),
+    return Column(
+      // mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              flex: 3,
+              child: MovementControl(),
+            ),
+            Expanded(
+              flex: 3,
+              child: HelperTool(),
+            ),
+            Expanded(
+              flex: 4,
+              child: NumberPad(),
+            )
+          ],
+        ),
+        Flexible(
+          child: Opacity(
+            opacity: .3,
+            child: Divider(
+              height: 2.5,
+              color: Colors.indigo,
+              thickness: 3.5,
+              endIndent: 100.0,
+              indent: 100.0,
+            ),
           ),
-          Flexible(
-            flex: 3,
-            child: HelperTool(),
-          ),
-          Flexible(
-            flex: 4,
-            child: NumberPad(),
-          )
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -98,8 +196,36 @@ class SudokuControl extends StatelessWidget {
 class MovementControl extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Placeholder(),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ActionButton(Icons.label),
+            /*Transform.rotate(
+                angle: 90 * pi / 180, child: ActionButton(Icons.label)),*/
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            /*Transform.rotate(
+                angle: 360 * pi / 180, child: ActionButton(Icons.label)),
+            Transform.rotate(
+                angle: 180 * pi / 180, child: ActionButton(Icons.label)),*/
+            ActionButton(Icons.label),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ActionButton(Icons.label),
+            /*Transform.rotate(
+                angle: 270 * pi / 180, child: ActionButton(Icons.label)),*/
+          ],
+        ),
+      ],
     );
   }
 }
@@ -122,6 +248,7 @@ class _HelperToolState extends State<HelperTool> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -180,6 +307,7 @@ class NumberPad extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -240,7 +368,6 @@ class _AnimatedEditIconState extends AnimatedWidgetBaseState<AnimatedEditIcon> {
             (color) => ColorTween(begin: color));
   }
 }
-
 
 /*
  If the begin and end color is same then lerp won't be visible
