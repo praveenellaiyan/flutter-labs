@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_state_mgmt/src/model/item.dart';
 import 'package:flutter_state_mgmt/src/model/todo_state.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  /*runApp(ChangeNotifierProvider(
-    create: (context) => Todo(),
-    child: MyApp(),
-  ));*/
   runApp(MyApp());
 }
 
@@ -36,7 +33,8 @@ class TodoPage extends StatefulWidget {
 }
 
 class _TodoPageState extends State<TodoPage> {
-  String inputTodo;
+  String _inputTodo = '';
+  bool _isCompleted = false;
 
   @override
   Widget build(BuildContext context) {
@@ -47,33 +45,50 @@ class _TodoPageState extends State<TodoPage> {
         ),
         body: Column(children: [
           Expanded(
-            child: ListView(
-              children: todo.todoList.map((e) {
+            child: ListView.builder(
+              itemCount: todo.todoList.length,
+              itemBuilder: (context, index) {
+                final item = todo.todoList.elementAt(index);
                 return Row(
                   children: [
-                    Text(e),
+                    Text(item.item),
+                    Checkbox(
+                      value: item.isCompleted,
+                      onChanged: (value) {
+                        todo.updateTodo(
+                            index, Item.fromOld(item, isCompleted: value));
+                      },
+                    ),
                     IconButton(
                       icon: Icon(Icons.remove),
                       onPressed: () {
-                        todo.removeTodo(e);
+                        todo.removeTodo(index);
                       },
                     )
                   ],
                 );
-              }).toList(),
+              },
             ),
           ),
           TextField(
             showCursor: true,
             onChanged: (value) {
               setState(() {
-                inputTodo = value;
+                _inputTodo = value;
+              });
+            },
+          ),
+          Checkbox(
+            value: _isCompleted,
+            onChanged: (value) {
+              setState(() {
+                _isCompleted = value;
               });
             },
           ),
           RaisedButton(
             onPressed: () {
-              todo.addTodo(inputTodo);
+              todo.addTodo(Item(_inputTodo, _isCompleted));
             },
             child: FlatButton.icon(
               label: Text("Add"),
